@@ -56,7 +56,7 @@ class IpTest extends UnitTest
                 'allowPrivate' => false,
                 'allowReserved' => false,
                 'allowEmpty' => false,
-        	  ]));
+            ]));
 
             expect($validation->validate(['ip' => '127.0.0.1']))->notEmpty();
             expect($validation->validate(['ip' => '192.168.10.20']))->notEmpty();
@@ -99,22 +99,22 @@ class IpTest extends UnitTest
             ]));
 
             $messages = $validation->validate([
-                'ip' => '127.0.0.1', 
+                'ip' => '127.0.0.1',
                 'anotherIp' => '127.0.0.1',
             ]);
             expect($messages)->count(1);
             $messages = $validation->validate([
-                'ip' => '192.168.10.20', 
+                'ip' => '192.168.10.20',
                 'anotherIp' => '192.168.10.20',
             ]);
             expect($messages)->count(1);
             $messages = $validation->validate([
-                'ip' => '192.168.10.20', 
+                'ip' => '192.168.10.20',
                 'anotherIp' => '',
             ]);
             expect($messages)->count(0);
             $messages = $validation->validate([
-                'ip' => '2001:cdba:0000:0000:0000:0000:3257:9652', 
+                'ip' => '2001:cdba:0000:0000:0000:0000:3257:9652',
                 'anotherIp' => '2001:cdba:0000:0000:0000:0000:3257:9652',
             ]);
             expect($messages)->count(1);
