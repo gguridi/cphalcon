@@ -3,6 +3,7 @@
 namespace Phalcon\Test\Unit\Mvc;
 
 use Helper\CollectionTrait;
+use Phalcon\Mvc\Collection;
 use Phalcon\Test\Module\UnitTest;
 use Phalcon\Test\Collections\Songs;
 use Phalcon\Test\Collections\Store\Songs as StoreSongs;
@@ -11,7 +12,7 @@ use Phalcon\Test\Collections\Store\Songs as StoreSongs;
  * \Phalcon\Test\Unit\Mvc\CollectionTest
  * Tests the Phalcon\Mvc\Collection component
  *
- * @copyright (c) 2011-2016 Phalcon Team
+ * @copyright (c) 2011-2017 Phalcon Team
  * @link      http://www.phalconphp.com
  * @author    Andres Gutierrez <andres@phalconphp.com>
  * @author    Serghei Iakovlev <serghei@phalconphp.com>
@@ -453,6 +454,32 @@ class CollectionTest extends UnitTest
                         StoreSongs::class . '::afterUpdate' => 1,
                     )
                 );
+            }
+        );
+    }
+
+    /**
+     * Tests Collection dirty state
+     *
+     * @author Wojciech Ślawski <jurigag@gmail.com>
+     * @since  2017-03-10
+     */
+    public function testDirtyState()
+    {
+        $this->specify(
+            'Dirty state is not set properly',
+            function () {
+                $song = new Songs();
+                $song->artist = 'Cinema Strange';
+                $song->name = 'Hebenon Vial';
+                expect($song->getDirtyState())->equals(Collection::DIRTY_STATE_TRANSIENT);
+                $song->create();
+                expect($song->getDirtyState())->equals(Collection::DIRTY_STATE_PERSISTENT);
+                $id = $song->getId();
+                $song = Songs::findById($id);
+                expect($song->getDirtyState())->equals(Collection::DIRTY_STATE_PERSISTENT);
+                $song->delete();
+                expect($song->getDirtyState())->equals(Collection::DIRTY_STATE_DETACHED);
             }
         );
     }

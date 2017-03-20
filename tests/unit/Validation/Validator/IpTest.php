@@ -10,7 +10,7 @@ use Phalcon\Validation\Validator\Ip;
  * \Phalcon\Test\Unit\Validation\Validator\DateTest
  * Tests the \Phalcon\Validation\Validator\Date component
  *
- * @copyright (c) 2011-2016 Phalcon Team
+ * @copyright (c) 2011-2017 Phalcon Team
  * @link      http://www.phalconphp.com
  * @author    Gorka Guridi <gorka.guridi@gmail.com>
  * @package   Phalcon\Test\Unit\Validation\Validator
@@ -42,15 +42,12 @@ class IpTest extends UnitTest
                 'allowEmpty' => true,
             ]));
 
-            $messages = $validation->validate(['ip' => '127.0.0.1']);
-            $this->assertEmpty($messages, 'Ip address should be valid');
-            $messages = $validation->validate(['ip' => '192.168.10.20']);
-            $this->assertEmpty($messages, 'Ip address should be valid');
-            $messages = $validation->validate(['ip' => '']);
-            $this->assertEmpty($messages, 'Empty ip address should be valid.');
+            expect($validation->validate(['ip' => '127.0.0.1']))->isEmpty();
+            expect($validation->validate(['ip' => '192.168.10.20']))->isEmpty();
+            expect($validation->validate(['ip' => '']))->isEmpty();
             $messages = $validation->validate(['ip' => '2001:cdba:0000:0000:0000:0000:3257:9652']);
-            $this->assertNotEmpty($messages, 'Ip version 6 should not be valid');
-            $this->assertEquals((string) $messages[0], 'This is a test message');
+            expect($messages)->notEmpty();
+            expect((string) $messages[0])->equals('This is a test message');
 
             $validation = new Validation();
             $validation->add('ip', new Ip([
@@ -61,14 +58,10 @@ class IpTest extends UnitTest
                 'allowEmpty' => false,
         	  ]));
 
-            $messages = $validation->validate(['ip' => '127.0.0.1']);
-            $this->assertNotEmpty($messages, 'Ip address should not be valid');
-            $messages = $validation->validate(['ip' => '192.168.10.20']);
-            $this->assertNotEmpty($messages, 'Ip address should not be valid');
-            $messages = $validation->validate(['ip' => '']);
-            $this->assertNotEmpty($messages, 'Empty ip address should not be valid.');
-            $messages = $validation->validate(['ip' => '2001:cdba:0000:0000:0000:0000:3257:9652']);
-            $this->assertEmpty($messages, 'Ip version 6 should be valid');
+            expect($validation->validate(['ip' => '127.0.0.1']))->notEmpty();
+            expect($validation->validate(['ip' => '192.168.10.20']))->notEmpty();
+            expect($validation->validate(['ip' => '']))->notEmpty();
+            expect($validation->validate(['ip' => '2001:cdba:0000:0000:0000:0000:3257:9652']))->isEmpty();
         });
     }
 
@@ -109,22 +102,22 @@ class IpTest extends UnitTest
                 'ip' => '127.0.0.1', 
                 'anotherIp' => '127.0.0.1',
             ]);
-            expect($messages->count())->equals(1);
+            expect($messages)->count(1);
             $messages = $validation->validate([
                 'ip' => '192.168.10.20', 
                 'anotherIp' => '192.168.10.20',
             ]);
-            expect($messages->count())->equals(1);
+            expect($messages)->count(1);
             $messages = $validation->validate([
                 'ip' => '192.168.10.20', 
                 'anotherIp' => '',
             ]);
-            expect($messages->count())->equals(0);
+            expect($messages)->count(0);
             $messages = $validation->validate([
                 'ip' => '2001:cdba:0000:0000:0000:0000:3257:9652', 
                 'anotherIp' => '2001:cdba:0000:0000:0000:0000:3257:9652',
             ]);
-            expect($messages->count())->equals(1);
+            expect($messages)->count(1);
         });
     }
 }
